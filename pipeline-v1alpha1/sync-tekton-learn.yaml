@@ -1,0 +1,9 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: sync-tekton-learn-pipeline
+spec:
+  task:
+  - name: sync
+    taskRef: 
+      name:
