@@ -3,7 +3,25 @@ kind: Pipeline
 metadata:
   name: sync-tekton-learn-pipeline
 spec:
-  task:
-  - name: sync
-    taskRef: 
-      name:
+  resources:
+    - name: tekton-learn
+      type: git
+  tasks:
+    - name: sync
+      taskRef:
+        kind: Task
+        name: sync-tekton-learn-task
+      params:
+        - name: pathToResourceFiles
+          value: /workspace/tekton-learn
+        - name: apply-directory
+          value: tasks-v1alpha1
+        - name: target-namespace
+          value: tekton-learn
+      resources:
+        inputs:
+          - name: tekton-learn
+            resource: tekton-learn
+    - name: echo
+      taskRef:
+        name: echo-hello-world

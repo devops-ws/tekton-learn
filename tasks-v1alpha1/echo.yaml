@@ -4,6 +4,12 @@ metadata:
   name: echo-hello-world
 spec:
   steps:
+  - name: list-files
+    image: alpine
+    command:
+    - ls
+    args:
+    - -ahl
   - name: echo
     image: alpine
     command:

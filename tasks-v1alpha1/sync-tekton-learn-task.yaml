@@ -1,34 +1,44 @@
 apiVersion: tekton.dev/v1alpha1
 kind: Task
 metadata:
+  namespace: tekton-learn
   name: sync-tekton-learn-task
 spec:
   inputs:
     params:
-    - default: /workspace/git-source
-      description: The path to the resource files to apply
-      name: pathToResourceFiles
-      type: string
-    - default: .
-      description: The directory from which resources are to be applied
-      name: apply-pipelines
-      type: string
-    - default: tekton-pipelines
-      description: The namespace where created resources will go
-      name: target-namespace
-      type: string
-  resources:
-    - name: tekton-learn
-      type: git
+      - default: /workspace/tekton-learn
+        description: The path to the resource files to apply
+        name: pathToResourceFiles
+        type: string
+      - default: .
+        description: The directory from which resources are to be applied
+        name: apply-directory
+        type: string
+      - default: tekton-pipelines
+        description: The namespace where created resources will go
+        name: target-namespace
+        type: string
+    resources:
+      - name: tekton-learn
+        type: git
   steps:
-  - args:
-    - apply
-    - '-f'
-    - $(inputs.params.pathToResourceFiles)/$(inputs.params.apply-directory)
-    - '-n'
-    - $(inputs.params.target-namespace)
-    command:
-      - kubectl
-    image: >-
-      lachlanevenson/k8s-kubectl@sha256:429bf937e48c868caaf9525b88cf3a2f564ca59b43379e67a6b0747300b06a17
-    name: kubectl-apply
+    - name: list-files
+      image: >-
+        lachlanevenson/k8s-kubectl@sha256:429bf937e48c868caaf9525b88cf3a2f564ca59b43379e67a6b0747300b06a17
+      resources: {}
+      command:
+        - ls
+      args:
+        - -shlR
+    - args:
+        - apply
+        - "-f"
+        - $(inputs.params.pathToResourceFiles)/$(inputs.params.apply-directory)
+        - "-n"
+        - $(inputs.params.target-namespace)
+      command:
+        - kubectl
+      image: >-
+        lachlanevenson/k8s-kubectl@sha256:429bf937e48c868caaf9525b88cf3a2f564ca59b43379e67a6b0747300b06a17
+      name: kubectl-apply
+      resources: {}

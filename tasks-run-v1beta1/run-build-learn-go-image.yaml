@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  generateName: run-build-learn-go-image
+spec:
+  serviceAccountName: docker-hub
+  taskRef:
+    name: build-learn-go-image-from-git
+  params:
+    - name: pathToDockerfile
+      value: Dockerfile.multiStage
+    - name: pathToContext
+      value: /workspace/docker-source/
+  resources:
+    inputs:
+      - name: docker-source
+        resourceRef:
+          name: learn-go
+    outputs:
+      - name: builtImage
+        resourceRef:
+          name: learn-go-docker

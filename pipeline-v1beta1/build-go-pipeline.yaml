@@ -1,0 +1,26 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: build-go-pipeline
+spec:
+  resources:
+    - name: docker-source
+      type: git
+    - name: builtImage
+      type: image
+  tasks:
+    - name: build-go
+      taskRef:
+        name: build-learn-go-image-from-git
+      params:
+        - name: pathToDockerfile
+          value: Dockerfile.multiStage
+        - name: pathToContext
+          value: /workspace/docker-source/
+      resources:
+        inputs:
+          - name: docker-source
+            resource: docker-source
+        outputs:
+          - name: builtImage
+            resource: builtImage

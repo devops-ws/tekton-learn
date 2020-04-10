@@ -1,0 +1,40 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build-learn-go-image-from-git
+spec:
+  params:
+    - name: pathToDockerfile
+      type: string
+      description: docker file path
+      default: /workspace/docker-source/Dockerfile
+    - name: pathToContext
+      type: string
+      description: The build context used by docker
+      default: /workspace/docker-source
+    - name: revision
+      type: string
+      description: the branch of target git repository
+      default: master
+  resources:
+    inputs:
+      - name: docker-source
+        type: git
+    outputs:
+      - name: builtImage
+        type: image
+  steps:
+    - name: build-and-push
+      image: gcr.io/kaniko-project/executor:v0.17.1
+      imagePullPolicy: IfNotPresent
+      env:
+        - name: "DOCKER_CONFIG"
+          value: "/tekton/home/.docker/"
+      command:
+        - /kaniko/executor
+      args:
+        - --dockerfile=$(params.pathToDockerfile)
+        - --destination=$(resources.outputs.builtImage.url)
+        - --context=$(params.pathToContext)
+        - --no-push
+        - --verbosity=debug

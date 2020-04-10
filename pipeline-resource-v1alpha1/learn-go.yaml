@@ -1,11 +1,11 @@
 apiVersion: tekton.dev/v1alpha1
 kind: PipelineResource
 metadata:
-  name: tekton-learn
+  name: learn-go
 spec:
   type: git
   params:
     - name: revision
       value: master
     - name: url
-      value: https://github.com/devops-ws/tekton-learn
+      value: https://github.com/devops-ws/learn-pipeline-go

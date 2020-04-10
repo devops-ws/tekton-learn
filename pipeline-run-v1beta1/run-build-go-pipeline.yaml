@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  generateName: run-build-go-pipeline
+spec:
+  pipelineRef:
+    name: build-go-pipeline
+  resources:
+    - name: docker-source
+      resourceRef:
+        name: learn-go
+    - name: builtImage
+      resourceRef:
+        name: learn-go-docker
